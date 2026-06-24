@@ -167,7 +167,7 @@
     "observaciones": "Viernes: 19:30; Sábado: 9:30",
     "ultima_actualizacion": "2026-06-23"
   },
-    {
+  {
     "id": 12,
     "tipo": "comisionista",
     "nombre": "Gisala Sicacardi",
@@ -179,6 +179,34 @@
     "horario_llegada": "00:30 & 14:30 & 21:30",
     "dias": ["Viernes", "Sábado", "Domingo"],
     "observaciones": "Viernes: 22:30; Sábado: 12:30; Domingo: 19:00",
+    "ultima_actualizacion": "2026-06-23"
+  },
+  {
+    "id": 13,
+    "tipo": "comisionista",
+    "nombre": "Ignacio Aramburu",
+    "telefono": "+54 9 3468500211",
+    "vehiculo": "Renault Kangoo",
+    "origen": "Chañar Ladeado",
+    "destino": "Rosario",
+    "horario_salida": "05:30",
+    "horario_llegada": "08:00",
+    "dias": ["Lunes", "Martes", "Jueves", "Viernes"],
+    "observaciones": "",
+    "ultima_actualizacion": "2026-06-23"
+  },
+  {
+    "id": 14,
+    "tipo": "comisionista",
+    "nombre": "Ignacio Aramburu",
+    "telefono": "+54 9 3468500211",
+    "vehiculo": "Renault Kangoo",
+    "origen": "Rosario",
+    "destino": "Chañar Ladeado",
+    "horario_salida": "12:30",
+    "horario_llegada": "15:30",
+    "dias": ["Lunes", "Martes", "Jueves", "Viernes"],
+    "observaciones": "",
     "ultima_actualizacion": "2026-06-23"
   }
 ]
