@@ -5,6 +5,7 @@
   class="contact-form"
   action="https://formspree.io/f/mzdlzqaz"
   method="POST"
+  novalidate
 >
   <div class="form-header">
     <h2 class="form-title">Enviar mensaje</h2>
@@ -14,22 +15,25 @@
   <div class="form-body">
     <div class="form-row">
       <div class="form-group">
-        <label for="nombre">Nombre completo *</label>
-        <input type="text" id="nombre" name="nombre" required placeholder="Juan Perez" />
+        <label for="nombre">Nombre completo <span aria-hidden="true">*</span></label>
+        <input type="text" id="nombre" name="nombre" required placeholder="Juan Perez" autocomplete="name" />
+        <span class="form-error" id="error-nombre" role="alert" aria-live="polite"></span>
       </div>
       <div class="form-group">
-        <label for="telefono">Telefono *</label>
-        <input type="tel" id="telefono" name="telefono" required placeholder="+54 9 11 5555-5555" />
+        <label for="telefono">Telefono <span aria-hidden="true">*</span></label>
+        <input type="tel" id="telefono" name="telefono" required placeholder="+54 9 11 5555-5555" autocomplete="tel" />
+        <span class="form-error" id="error-telefono" role="alert" aria-live="polite"></span>
       </div>
     </div>
 
     <div class="form-group">
       <label for="email">Email (opcional)</label>
-      <input type="email" id="email" name="email" placeholder="juan@email.com" />
+      <input type="email" id="email" name="email" placeholder="juan@email.com" autocomplete="email" />
+      <span class="form-error" id="error-email" role="alert" aria-live="polite"></span>
     </div>
 
     <div class="form-group">
-      <label for="asunto">Asunto *</label>
+      <label for="asunto">Asunto <span aria-hidden="true">*</span></label>
       <select id="asunto" name="asunto" required>
         <option value="">Seleccionar...</option>
         <option value="editar">Quiero editar mi informacion</option>
@@ -37,24 +41,135 @@
         <option value="agregar">Quiero agregar mi servicio</option>
         <option value="otro">Otro</option>
       </select>
+      <span class="form-error" id="error-asunto" role="alert" aria-live="polite"></span>
     </div>
 
     <div class="form-group">
-      <label for="mensaje">Mensaje *</label>
+      <label for="mensaje">Mensaje <span aria-hidden="true">*</span></label>
       <textarea id="mensaje" name="mensaje" required rows="4" placeholder="Describi lo que necesitas..."></textarea>
+      <span class="form-error" id="error-mensaje" role="alert" aria-live="polite"></span>
     </div>
 
+    <div class="form-errors-summary" id="form-error-summary" role="alert" aria-live="polite" hidden></div>
+
     <button type="submit" class="btn-submit">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M22 2L11 13" />
         <path d="M22 2l-7 20-4-9-9-4 20-7z" />
       </svg>
       Enviar mensaje
     </button>
 
-    <p class="form-note">* Campos obligatorios. Tu informacion se usa solo para responder tu consulta.</p>
+    <p class="form-note">
+      <span aria-hidden="true">*</span> <span>Campos obligatorios. Tu informacion se usa solo para responder tu consulta.</span>
+    </p>
   </div>
 </form>
+
+<script>
+  const form = document.querySelector('.contact-form');
+  if (form) {
+    const fields = [
+      { id: 'nombre', label: 'Nombre completo' },
+      { id: 'telefono', label: 'Telefono' },
+      { id: 'email', label: 'Email', optional: true },
+      { id: 'asunto', label: 'Asunto' },
+      { id: 'mensaje', label: 'Mensaje' },
+    ];
+
+    const errorMessages = {
+      valueMissing: 'Este campo es obligatorio.',
+      typeMismatch: 'El formato ingresado no es valido.',
+      tooShort: 'El valor ingresado es demasiado corto.',
+    };
+
+    function getError(input) {
+      for (const key of Object.keys(errorMessages)) {
+        if (input.validity[key]) {
+          return errorMessages[key];
+        }
+      }
+      return '';
+    }
+
+    function validateField(input) {
+      const field = fields.find((f) => f.id === input.id);
+      if (!field) return true;
+      if (field.optional && !input.value) {
+        clearError(input);
+        return true;
+      }
+
+      const errorEl = document.getElementById(`error-${input.id}`);
+      const msg = getError(input);
+
+      if (msg) {
+        input.setAttribute('aria-invalid', 'true');
+        input.setAttribute('aria-describedby', `error-${input.id}`);
+        if (errorEl) errorEl.textContent = msg;
+        return false;
+      }
+
+      clearError(input);
+      return true;
+    }
+
+    function clearError(input) {
+      input.removeAttribute('aria-invalid');
+      input.removeAttribute('aria-describedby');
+      const errorEl = document.getElementById(`error-${input.id}`);
+      if (errorEl) errorEl.textContent = '';
+    }
+
+    function showSummary(errors) {
+      const summary = document.getElementById('form-error-summary');
+      if (!summary) return;
+      if (errors.length > 0) {
+        summary.hidden = false;
+        summary.textContent = `Corregi los siguientes campos: ${errors.join(', ')}.`;
+      } else {
+        summary.hidden = true;
+        summary.textContent = '';
+      }
+    }
+
+    // Real-time validation on blur
+    fields.forEach((field) => {
+      const input = document.getElementById(field.id);
+      if (!input) return;
+      input.addEventListener('blur', () => validateField(input));
+      input.addEventListener('input', () => {
+        if (input.hasAttribute('aria-invalid')) {
+          validateField(input);
+        }
+      });
+    });
+
+    form.addEventListener('submit', (e) => {
+      let hasErrors = false;
+      const errorFields = [];
+
+      fields.forEach((field) => {
+        const input = document.getElementById(field.id);
+        if (!input) return;
+        if (!validateField(input)) {
+          hasErrors = true;
+          errorFields.push(field.label);
+        }
+      });
+
+      if (hasErrors) {
+        e.preventDefault();
+        showSummary(errorFields);
+        // Focus first invalid field
+        const firstInvalid = document.querySelector('[aria-invalid="true"]');
+        if (firstInvalid && 'focus' in firstInvalid) {
+          firstInvalid.focus();
+        }
+      }
+    });
+  }
+</script>
 
 <style>
   .contact-form {
@@ -127,9 +242,34 @@
     box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
   }
 
+  .form-group input[aria-invalid="true"],
+  .form-group select[aria-invalid="true"],
+  .form-group textarea[aria-invalid="true"] {
+    border-color: var(--color-error);
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+  }
+
   .form-group textarea {
     resize: vertical;
     min-height: 100px;
+  }
+
+  .form-error {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--color-error);
+    margin-top: 4px;
+    min-height: 1em;
+  }
+
+  .form-errors-summary {
+    font-size: var(--font-size-sm);
+    color: var(--color-error);
+    font-weight: 600;
+    margin-bottom: var(--space-md);
+    padding: 10px 14px;
+    background: rgba(239, 68, 68, 0.08);
+    border-radius: var(--radius-md);
   }
 
   .btn-submit {
@@ -138,6 +278,7 @@
     gap: 8px;
     width: 100%;
     padding: 12px 24px;
+    min-height: 48px;
     background: var(--color-accent);
     color: white;
     border: none;

@@ -2,18 +2,18 @@
 const year = new Date().getFullYear();
 ---
 
-<footer class="footer">
+<footer class="footer" role="contentinfo">
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
         <h3 class="footer-title">Ruta Express</h3>
         <p class="footer-desc">Informacion de transporte para tu pueblo. Horarios, rutas y contactos en un solo lugar.</p>
       </div>
-      <div class="footer-links">
+      <nav class="footer-links" aria-label="Navegacion">
         <h4 class="footer-heading">Navegacion</h4>
         <a href="/" class="footer-link">Transportes</a>
         <a href="/contacto" class="footer-link">Contacto</a>
-      </div>
+      </nav>
       <div class="footer-links">
         <h4 class="footer-heading">Legal</h4>
         <a href="/privacidad" class="footer-link">Politica de Privacidad</a>
@@ -30,7 +30,7 @@ const year = new Date().getFullYear();
 <style>
   .footer {
     background: var(--color-primary);
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.85);
     padding: var(--space-2xl) 0 0;
     margin-top: auto;
   }
@@ -52,14 +52,14 @@ const year = new Date().getFullYear();
 
   .footer-desc {
     font-size: var(--font-size-sm);
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.65);
     line-height: 1.6;
   }
 
   .footer-heading {
     font-size: var(--font-size-xs);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.5);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-bottom: var(--space-sm);
@@ -68,7 +68,7 @@ const year = new Date().getFullYear();
   .footer-link {
     display: block;
     font-size: var(--font-size-sm);
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.75);
     text-decoration: none;
     margin-bottom: 6px;
     transition: color var(--transition);
@@ -79,14 +79,22 @@ const year = new Date().getFullYear();
   }
 
   .footer-link.muted {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.6);
   }
 
   .footer-bottom {
     padding: var(--space-lg) 0;
     text-align: center;
     font-size: var(--font-size-xs);
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .footer-bottom a {
+    color: var(--color-accent);
+  }
+
+  .footer-bottom a:hover {
+    color: var(--color-accent-hover);
   }
 
   @media (max-width: 640px) {

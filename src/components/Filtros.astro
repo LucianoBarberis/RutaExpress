@@ -8,20 +8,22 @@ const { origenes } = Astro.props;
 
 <div class="filtros" id="filtros">
   <div class="filtro-row">
-    <div class="filtro-tipos">
+    <fieldset class="filtro-tipos">
+      <legend class="sr-only">Tipo de servicio</legend>
       <label class="check-label">
         <input type="checkbox" name="tipo" value="colectivo" checked />
-        <span class="check-mark"></span>
+        <span class="check-mark" aria-hidden="true"></span>
         Colectivo
       </label>
       <label class="check-label">
         <input type="checkbox" name="tipo" value="comisionista" checked />
-        <span class="check-mark"></span>
+        <span class="check-mark" aria-hidden="true"></span>
         Comisionista
       </label>
-    </div>
+    </fieldset>
 
     <div class="filtro-controls">
+      <label for="origen" class="sr-only">Filtrar por origen</label>
       <select id="origen" name="origen" class="filtro-select">
         <option value="">Todos los origenes</option>
         {origenes.map((o) => (
@@ -29,19 +31,21 @@ const { origenes } = Astro.props;
         ))}
       </select>
 
+      <label for="dia" class="sr-only">Filtrar por dia</label>
       <select id="dia" name="dia" class="filtro-select">
         <option value="">Todos los dias</option>
         <option value="Lunes">Lunes</option>
         <option value="Martes">Martes</option>
-        <option value="Miércoles">Miércoles</option>
+        <option value="Miercoles">Miércoles</option>
         <option value="Jueves">Jueves</option>
         <option value="Viernes">Viernes</option>
-        <option value="Sábado">Sábado</option>
+        <option value="Sabado">Sábado</option>
         <option value="Domingo">Domingo</option>
       </select>
 
+      <label for="buscar" class="sr-only">Buscar por texto</label>
       <div class="search-wrap">
-        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="11" cy="11" r="8" />
           <path d="m21 21-4.3-4.3" />
         </svg>
@@ -57,7 +61,7 @@ const { origenes } = Astro.props;
   </div>
 
   <div class="filtro-bar">
-    <div class="filtro-count">
+    <div class="filtro-count" role="status" aria-live="polite" aria-atomic="true">
       <span id="result-count">14</span> servicios encontrados
     </div>
     <button class="filtro-reset" id="filtro-reset" type="button">Limpiar filtros</button>
@@ -162,6 +166,8 @@ const { origenes } = Astro.props;
   .filtro-tipos {
     display: flex;
     gap: var(--space-lg);
+    border: none;
+    padding: 0;
   }
 
   .check-label {
