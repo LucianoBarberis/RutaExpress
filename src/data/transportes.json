@@ -29,7 +29,7 @@
       "nombre": "Turismo Bertero",
       "tipo": "comisionista",
       "telefono": "+54 9 3468536020",
-      "vehiculo": "",
+      "vehiculo": "Mercedes-benz Sprinter",
       "ultima_actualizacion": "2026-06-23"
     },
     {
@@ -55,6 +55,14 @@
       "telefono":"+54 9 3415595015",
       "vehiculo":"Renault Kangoo",
       "ultima_actualizacion":"2026-06-24"
+    },
+    {
+      "id": "dario-barberis",
+      "nombre": "Dario Barberis",
+      "tipo": "comisionista",
+      "telefono": "+54 9 3415462011",
+      "ultima_actualizacion":"2026-06-24",
+      "vehiculo": "Toyota Hiace"
     }
   ],
   "viajes": [
@@ -225,6 +233,28 @@
       ],
       "feriados": false,
       "observaciones": ""
+    },
+    {
+      "id": 16,
+      "empresa_id": "dario-barberis",
+      "origen": "Chañar Ladeado",
+      "destino": "Rosario",
+      "horarios": [
+        { "dias": ["Lunes", "Martes",  "Jueves"], "salida": "16:30", "llegada": "19:30" }
+      ],
+      "feriados": false,
+      "observaciones": "Servicio de Wifi abordo | Traslados especiales a cualquier punto del país"
+    },
+    {
+      "id": 17,
+      "empresa_id": "dario-barberis",
+      "origen": "Rosario",
+      "destino": "Chañar Ladeado",
+      "horarios": [
+        { "dias": ["Lunes", "Martes",  "Jueves"], "salida": "13:00", "llegada": "15:30" }
+      ],
+      "feriados": false,
+      "observaciones": "Servicio de Wifi abordo | Traslados especiales a cualquier punto del país"
     }
   ]
 }
