@@ -1,0 +1,36 @@
+# openspec/config.yaml
+schema: spec-driven
+
+context: |
+  Tech stack: Astro v7 (static site, no SSR), TypeScript strict, Node >=22.12
+  Architecture: Static SSG, vanilla CSS, JSON data source, client-side JS filtering
+  Data: src/data/transportes.json (flat array of transport services)
+  Pages: index (table+cards), contacto (Formspree), privacidad, 404
+  Design: Data-Dense Dashboard (DESIGN.md) — CSS Grid, mobile-first, no UI framework
+  Deploy: Vercel (via @vercel/analytics), Google AdSense
+  Skills: astro, frontend-design, accessibility, seo
+  Testing: NONE — no test runner, no linter, no formatter installed
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+  specs:
+    - Use Given/When/Then for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+  design:
+    - Include sequence diagrams for complex flows
+    - Document architecture decisions with rationale
+    - Always reference DESIGN.md for visual rules
+  tasks:
+    - Group by phase, use hierarchical numbering
+    - Keep tasks completable in one session
+  apply:
+    - Follow existing patterns: Astro components, vanilla CSS, client-side JS
+    tdd: false
+    test_command: ""
+  verify:
+    test_command: "astro build"
+    build_command: "astro build"
+    coverage_threshold: 0
+  archive:
+    - Warn before merging destructive deltas
