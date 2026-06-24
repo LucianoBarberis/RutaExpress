@@ -1,0 +1,652 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Filtros from '../components/Filtros.astro';
+import AdBanner from '../components/AdBanner.astro';
+import transportes from '../data/transportes.json';
+
+function formatPhone(tel: string): string {
+  return tel.replace(/[^0-9+]/g, '');
+}
+
+function whatsappUrl(tel: string): string {
+  const clean = tel.replace(/[^0-9]/g, '');
+  return `https://wa.me/${clean}`;
+}
+
+function parseHorarios(salida: string, llegada: string): { salida: string; llegada: string }[] {
+  const salidas = salida.split('&').map((s) => s.trim());
+  const llegadas = llegada.split('&').map((s) => s.trim());
+  const max = Math.max(salidas.length, llegadas.length);
+  const pairs: { salida: string; llegada: string }[] = [];
+  for (let i = 0; i < max; i++) {
+    pairs.push({ salida: salidas[i] || '', llegada: llegadas[i] || '' });
+  }
+  return pairs;
+}
+
+const origenes = [...new Set(transportes.map((t) => t.origen))];
+const sortedTransportes = [...transportes].sort((a, b) => {
+  if (a.tipo === b.tipo) return 0;
+  return a.tipo === 'comisionista' ? -1 : 1;
+});
+---
+
+<Layout>
+  <Header />
+
+  <main class="main-content">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-bg-shapes">
+          <svg class="hero-illustration" viewBox="0 0 600 400" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Sky glow -->
+            <ellipse cx="450" cy="100" rx="250" ry="180" fill="rgba(249,115,22,0.06)" />
+            <ellipse cx="200" cy="50" rx="300" ry="120" fill="rgba(59,130,246,0.05)" />
+  
+            <!-- Far mountains -->
+            <path d="M0 280 Q80 180 160 240 Q220 200 280 230 Q340 170 400 220 Q460 190 520 230 Q560 210 600 240 L600 350 L0 350 Z" fill="rgba(255,255,255,0.04)" />
+  
+            <!-- Near hills -->
+            <path d="M0 310 Q100 250 200 280 Q300 240 400 270 Q500 250 600 280 L600 350 L0 350 Z" fill="rgba(255,255,255,0.06)" />
+  
+            <!-- Road -->
+            <path d="M0 370 Q200 340 300 320 Q400 300 600 290" stroke="rgba(255,255,255,0.12)" stroke-width="40" stroke-linecap="round" fill="none" />
+            <path d="M0 370 Q200 340 300 320 Q400 300 600 290" stroke="rgba(255,255,255,0.05)" stroke-width="2" stroke-dasharray="8 12" fill="none" />
+  
+            <!-- Simple bus/trafic -->
+            <g transform="translate(280, 295)">
+              <rect x="0" y="4" width="44" height="18" rx="4" fill="rgba(249,115,22,0.4)" />
+              <rect x="6" y="0" width="20" height="6" rx="2" fill="rgba(249,115,22,0.35)" />
+              <circle cx="10" cy="24" r="4" fill="rgba(255,255,255,0.2)" />
+              <circle cx="34" cy="24" r="4" fill="rgba(255,255,255,0.2)" />
+              <rect x="8" y="6" width="8" height="6" rx="1" fill="rgba(255,255,255,0.15)" />
+              <rect x="18" y="6" width="8" height="6" rx="1" fill="rgba(255,255,255,0.15)" />
+              <rect x="28" y="6" width="8" height="6" rx="1" fill="rgba(255,255,255,0.15)" />
+            </g>
+  
+            <!-- Trees -->
+            <g opacity="0.15">
+              <path d="M60 310 L70 270 L80 310 Z" fill="white" />
+              <path d="M140 290 L150 255 L160 290 Z" fill="white" />
+              <path d="M480 280 L490 245 L500 280 Z" fill="white" />
+              <path d="M530 275 L540 240 L550 275 Z" fill="white" />
+            </g>
+          </svg>
+      </div>
+      <div class="container">
+        <div class="hero-content">
+          <div class="hero-text">
+            <h1 class="hero-title">Transportes Chañar Ladeado</h1>
+            <p class="hero-subtitle">
+              Informacion unificada de colectivos y comisionistas. Horarios,
+              rutas y contactos, todo en un solo lugar.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+      <AdBanner position="top" />
+
+      <Filtros origenes={origenes} />
+
+      <!-- Tabla / Cards -->
+      <div class="table-section">
+        <div class="table-header">
+          <h2 class="table-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="14" rx="2" />
+              <path d="M3 10h18" />
+              <path d="M7 7h.01" />
+              <path d="M17 7h.01" />
+            </svg>
+            Servicios disponibles
+          </h2>
+          <span class="table-count">{transportes.length} servicios</span>
+        </div>
+
+        <!-- Vista tabla (escritorio) -->
+        <div class="table-wrap">
+          <table class="tabla">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Empresa / Chofer</th>
+                <th class="hide-mobile">Vehiculo</th>
+                <th>Origen</th>
+                <th>Destino</th>
+                <th class="hide-mobile">Salida</th>
+                <th class="hide-mobile">Llegada</th>
+                <th class="hide-tablet">Dias</th>
+                <th>Contacto</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sortedTransportes.map((t, i) => (
+                <tr
+                  class="transporte-row"
+                  data-tipo={t.tipo}
+                  data-origen={t.origen}
+                  data-dias={t.dias.join(',')}
+                  style={`animation-delay: ${i * 0.04}s`}
+                >
+                  <td data-label="Tipo">
+                    <span class:list={['badge', t.tipo === 'colectivo' ? 'badge-colectivo' : 'badge-comisionista']}>
+                      {t.tipo === 'colectivo' ? 'Colectivo' : 'Comisionista'}
+                    </span>
+                  </td>
+                  <td data-label="Empresa" class="cell-name">{t.nombre}</td>
+                  <td data-label="Vehiculo" class="hide-mobile">{t.vehiculo}</td>
+                  <td data-label="Origen" class="cell-city">{t.origen}</td>
+                  <td data-label="Destino" class="cell-city">{t.destino}</td>
+                  <td data-label="Salida" class="cell-time hide-mobile">
+                    {parseHorarios(t.horario_salida, t.horario_llegada).map(p => <div>{p.salida}</div>)}
+                  </td>
+                  <td data-label="Llegada" class="cell-time hide-mobile">
+                    {parseHorarios(t.horario_salida, t.horario_llegada).map(p => <div>{p.llegada}</div>)}
+                  </td>
+                  <td data-label="Dias" class="hide-tablet">
+                    <span class="dias-list">{t.dias.join(', ')}</span>
+                  </td>
+                  <td data-label="Contacto">
+                    <a
+                      href={whatsappUrl(t.telefono)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="btn-whatsapp"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                        <path d="M12 2C6.477 2 2 6.477 2 12c0 1.88.515 3.642 1.416 5.14L2 22l4.86-1.416A9.967 9.967 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
+                      </svg>
+                      <span class="btn-label">WhatsApp</span>
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Vista cards (mobile) -->
+        <div class="cards-mobile">
+          {sortedTransportes.map((t, i) => (
+            <article
+              class="card-mobile"
+              data-tipo={t.tipo}
+              data-origen={t.origen}
+              data-dias={t.dias.join(',')}
+              style={`animation-delay: ${i * 0.04}s`}
+            >
+              <div class="card-mobile-header">
+                <span class:list={['badge', t.tipo === 'colectivo' ? 'badge-colectivo' : 'badge-comisionista']}>
+                  {t.tipo === 'colectivo' ? 'Colectivo' : 'Comisionista'}
+                </span>
+                <span class="card-mobile-name">{t.nombre}</span>
+              </div>
+              <div class="card-mobile-body">
+                <div class="card-mobile-row">
+                  <span class="card-mobile-label">Vehiculo</span>
+                  <span class="card-mobile-value">{t.vehiculo}</span>
+                </div>
+                <div class="card-mobile-row">
+                  <span class="card-mobile-label">Ruta</span>
+                  <span class="card-mobile-value route">{t.origen} &rarr; {t.destino}</span>
+                </div>
+                <div class="card-mobile-row">
+                  <span class="card-mobile-label">Horario</span>
+                  <span class="card-mobile-value">
+                    {parseHorarios(t.horario_salida, t.horario_llegada).map(p => (
+                      <div>{p.salida} — {p.llegada}</div>
+                    ))}
+                  </span>
+                </div>
+                <div class="card-mobile-row">
+                  <span class="card-mobile-label">Dias</span>
+                  <span class="card-mobile-value">{t.dias.join(', ')}</span>
+                </div>
+                {t.observaciones && (
+                  <div class="card-mobile-row">
+                    <span class="card-mobile-label">Nota</span>
+                    <span class="card-mobile-value note">{t.observaciones}</span>
+                  </div>
+                )}
+              </div>
+              <div class="card-mobile-footer">
+                <a
+                  href={whatsappUrl(t.telefono)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-whatsapp"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                    <path d="M12 2C6.477 2 2 6.477 2 12c0 1.88.515 3.642 1.416 5.14L2 22l4.86-1.416A9.967 9.967 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
+                  </svg>
+                  {t.telefono}
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <p class="sin-resultados hidden" id="sin-resultados">
+          No se encontraron servicios con esos filtros.
+        </p>
+
+        <p class="table-footer">
+          Los horarios pueden variar. Consulte directamente con el transportista
+          para confirmar disponibilidad.
+        </p>
+      </div>
+
+      <AdBanner position="bottom" />
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  /* ===== Hero ===== */
+  .hero {
+    background: linear-gradient(135deg, #003366 0%, #004080 50%, #002b5c 100%);
+    padding: var(--space-4xl) 0 var(--space-2xl);
+    position: relative;
+    overflow: hidden;
+    min-height: 320px;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero-bg-shapes {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .hero-illustration {
+    position: absolute;
+    right: -80px;
+    bottom: -20px;
+    width: 75%;
+    height: auto;
+    max-width: 700px;
+    opacity: 1;
+    
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-text {
+    max-width: 520px;
+  }
+
+  .hero-title {
+    font-size: var(--font-size-display);
+    font-weight: 300;
+    color: white;
+    line-height: 1.1;
+    margin-bottom: var(--space-md);
+    letter-spacing: -0.02em;
+  }
+
+  .hero-subtitle {
+    font-size: var(--font-size-lg);
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.6;
+  }
+
+  /* ===== Table Section ===== */
+  .table-section {
+    margin-top: var(--space-2xl);
+  }
+
+  .table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-md);
+    padding: 0 var(--space-xs);
+  }
+
+  .table-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .table-title svg {
+    color: var(--color-primary);
+  }
+
+  .table-count {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    font-weight: 500;
+    background: var(--color-surface);
+    padding: 4px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+  }
+
+  /* ===== Desktop Table ===== */
+  .table-wrap {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    overflow-x: auto;
+  }
+
+  .tabla {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: var(--font-size-sm);
+  }
+
+  .tabla thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .tabla th {
+    background: var(--color-primary);
+    color: white;
+    font-weight: 600;
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 16px 18px;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 2px solid #002244;
+  }
+
+  .tabla td {
+    padding: 14px 18px;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: middle;
+    color: var(--color-text);
+    font-size: var(--font-size-sm);
+  }
+
+  .tabla tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .transporte-row {
+    transition: background-color var(--transition);
+    animation: fadeInUp 0.35s ease both;
+  }
+
+  .transporte-row.hidden {
+    display: none;
+  }
+
+  .transporte-row:hover td {
+    background: #eef2ff;
+  }
+
+  .transporte-row:nth-child(even) td {
+    background: #f8fafc;
+  }
+
+  .transporte-row:nth-child(even):hover td {
+    background: #eef2ff;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .badge-colectivo {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+
+  .badge-comisionista {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  .cell-name {
+    font-weight: 700;
+    color: var(--color-primary);
+    white-space: nowrap;
+  }
+
+  .cell-city {
+    font-weight: 500;
+  }
+
+  .cell-time {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    font-size: var(--font-size-base);
+    white-space: nowrap;
+  }
+
+  .dias-list {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    line-height: 1.4;
+  }
+
+  .btn-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #25d366;
+    color: white;
+    padding: 7px 14px;
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition);
+    white-space: nowrap;
+  }
+
+  .btn-whatsapp:hover {
+    background: #1da85a;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
+    color: white;
+    transform: translateY(-1px);
+  }
+
+  .table-footer {
+    margin-top: var(--space-md);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-align: center;
+    padding: 0 var(--space-md);
+  }
+
+  .sin-resultados {
+    text-align: center;
+    padding: var(--space-3xl) var(--space-xl);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-base);
+    background: var(--color-surface);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-lg);
+  }
+
+  .sin-resultados.hidden {
+    display: none;
+  }
+
+  /* ===== Mobile Cards (hidden on desktop) ===== */
+  .cards-mobile {
+    display: none;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 900px) {
+    .hide-tablet { display: none; }
+  }
+
+  @media (max-width: 768px) {
+    .hide-mobile { display: none; }
+  }
+
+  @media (max-width: 767px) {
+    /* Hero */
+    .hero {
+      padding: var(--space-2xl) 0 var(--space-lg);
+      min-height: auto;
+    }
+
+    .hero-illustration {
+      right: -40px;
+      bottom: 0;
+      width: 90%;
+      opacity: 0.5;
+    }
+
+    .hero-text {
+      max-width: 100%;
+    }
+
+    .hero-subtitle {
+      font-size: var(--font-size-base);
+    }
+
+    /* Hide desktop table, show mobile cards */
+    .table-wrap {
+      display: none;
+    }
+
+    .cards-mobile {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .card-mobile {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      animation: fadeInUp 0.3s ease both;
+    }
+
+    .card-mobile.hidden {
+      display: none;
+    }
+
+    .card-mobile-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: 1px solid var(--color-border);
+      background: #f8fafc;
+    }
+
+    .card-mobile-name {
+      font-weight: 700;
+      font-size: var(--font-size-base);
+      color: var(--color-primary);
+    }
+
+    .card-mobile-body {
+      padding: var(--space-sm) var(--space-lg);
+    }
+
+    .card-mobile-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 8px 0;
+      border-bottom: 1px solid #f1f5f9;
+      gap: var(--space-sm);
+    }
+
+    .card-mobile-row:last-child {
+      border-bottom: none;
+    }
+
+    .card-mobile-label {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      flex-shrink: 0;
+    }
+
+    .card-mobile-value {
+      font-size: var(--font-size-sm);
+      color: var(--color-text);
+      font-weight: 500;
+      text-align: right;
+    }
+
+    .card-mobile-value.route {
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+
+    .card-mobile-value.note {
+      color: var(--color-accent);
+      font-style: italic;
+    }
+
+    .card-mobile-footer {
+      padding: var(--space-md) var(--space-lg);
+      border-top: 1px solid var(--color-border);
+      background: #f8fafc;
+    }
+
+    .card-mobile-footer .btn-whatsapp {
+      width: 100%;
+      justify-content: center;
+      padding: 10px 14px;
+    }
+
+    .table-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-sm);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .card-mobile-header {
+      padding: var(--space-sm) var(--space-md);
+    }
+
+    .card-mobile-body {
+      padding: var(--space-xs) var(--space-md);
+    }
+
+    .card-mobile-footer {
+      padding: var(--space-sm) var(--space-md);
+    }
+
+    .card-mobile-row {
+      padding: 6px 0;
+    }
+  }
+</style>

@@ -1,0 +1,137 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Politica de Privacidad — Ruta Express">
+  <Header />
+
+  <main class="main-content">
+    <div class="container">
+      <article class="privacy">
+        <h1 class="privacy-title">Politica de Privacidad</h1>
+        <p class="privacy-date"><strong>Ultima actualizacion:</strong> 23 de junio de 2026</p>
+
+        <section class="privacy-section">
+          <h2>1. Informacion que recopilamos</h2>
+          <p>Ruta Express recopila la informacion que los usuarios nos proporcionan voluntariamente a traves del formulario de contacto, incluyendo nombre, telefono, correo electronico y mensaje.</p>
+          <p>No recopilamos datos de navegacion, cookies de seguimiento ni informacion personal sin consentimiento explicito.</p>
+        </section>
+
+        <section class="privacy-section">
+          <h2>2. Uso de la informacion</h2>
+          <p>La informacion proporcionada se utiliza unicamente para:</p>
+          <ul>
+            <li>Responder consultas enviadas a traves del formulario de contacto</li>
+            <li>Actualizar, agregar o eliminar informacion de transporte en el sitio</li>
+            <li>Comunicarnos con los transportistas respecto a sus datos publicados</li>
+          </ul>
+        </section>
+
+        <section class="privacy-section">
+          <h2>3. Publicidad y terceros</h2>
+          <p>Este sitio utiliza Google AdSense para mostrar anuncios. Google puede utilizar cookies para mostrar anuncios basados en visitas previas a este u otros sitios web. Podes optar por no recibir publicidad personalizada en <a href="https://ads.google.com" target="_blank" rel="noopener noreferrer">Ads Settings</a>.</p>
+          <p>Google AdSense puede recopilar datos anonimos de navegacion para mejorar la relevancia de los anuncios. Consulta la <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Politica de Privacidad de Google</a> para mas informacion.</p>
+        </section>
+
+        <section class="privacy-section">
+          <h2>4. Almacenamiento y seguridad</h2>
+          <p>Los datos enviados a traves del formulario de contacto se procesan a traves de Formspree y no se almacenan en nuestros servidores. Tomamos medidas razonables para proteger la informacion personal contra acceso no autorizado.</p>
+        </section>
+
+        <section class="privacy-section">
+          <h2>5. Derechos del usuario</h2>
+          <p>En cualquier momento podes solicitar:</p>
+          <ul>
+            <li>El acceso a tus datos personales</li>
+            <li>La correccion o eliminacion de tus datos</li>
+            <li>La cancelacion de cualquier comunicacion futura</li>
+          </ul>
+          <p>Para ejercer estos derechos, contactanos a traves de nuestra <a href="/contacto">pagina de contacto</a>.</p>
+        </section>
+
+        <section class="privacy-section">
+          <h2>6. Cambios en esta politica</h2>
+          <p>Nos reservamos el derecho de actualizar esta politica de privacidad en cualquier momento. Los cambios se publicaran en esta pagina con la fecha de actualizacion correspondiente.</p>
+        </section>
+      </article>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .privacy {
+    max-width: 720px;
+    margin: 0 auto;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-2xl) var(--space-xl);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .privacy-title {
+    font-size: var(--font-size-3xl);
+    font-weight: 800;
+    color: var(--color-text);
+    margin-bottom: var(--space-xs);
+    letter-spacing: -0.02em;
+  }
+
+  .privacy-date {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-2xl);
+  }
+
+  .privacy-section {
+    margin-bottom: var(--space-xl);
+  }
+
+  .privacy-section h2 {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: var(--space-sm);
+  }
+
+  .privacy-section p {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    margin-bottom: var(--space-sm);
+  }
+
+  .privacy-section ul {
+    margin: var(--space-sm) 0 var(--space-sm) var(--space-xl);
+  }
+
+  .privacy-section li {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    line-height: 1.7;
+    margin-bottom: var(--space-xs);
+  }
+
+  .privacy-section a {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+
+  .privacy-section a:hover {
+    color: var(--color-accent-hover);
+  }
+
+  @media (max-width: 640px) {
+    .privacy {
+      padding: var(--space-lg) var(--space-md);
+    }
+
+    .privacy-title {
+      font-size: var(--font-size-2xl);
+    }
+  }
+</style>

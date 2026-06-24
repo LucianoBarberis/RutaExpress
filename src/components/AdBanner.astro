@@ -1,0 +1,47 @@
+---
+interface Props {
+  position: 'top' | 'bottom';
+}
+
+const { position } = Astro.props;
+---
+
+<div class:list={['ad-banner', `ad-${position}`]}>
+  <span class="ad-label">Publicidad</span>
+  <div class="ad-placeholder">
+    <p class="ad-text">Espacio publicitario — AdSense</p>
+  </div>
+</div>
+
+<style>
+  .ad-banner {
+    margin: var(--space-lg) 0;
+    text-align: center;
+  }
+
+  .ad-label {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .ad-placeholder {
+    background: var(--color-surface);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ad-text {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+  }
+</style>

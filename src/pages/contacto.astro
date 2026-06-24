@@ -1,0 +1,174 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ContactForm from '../components/ContactForm.astro';
+---
+
+<Layout title="Contacto — Ruta Express">
+  <Header />
+
+  <main class="main-content">
+    <div class="container">
+      <section class="contacto-hero">
+        <h1 class="page-title">Contacto</h1>
+        <p class="page-subtitle">
+          Sos chofer, comisionista o dueño de una empresa de transporte? Contactanos para
+          actualizar, agregar o eliminar tu informacion del listado.
+        </p>
+      </section>
+
+      <div class="contacto-layout">
+        <div class="info-cards">
+          <h2 class="info-heading">Que necesitas hacer?</h2>
+
+          <div class="info-card">
+            <div class="info-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                <path d="m15 5 4 4"/>
+              </svg>
+            </div>
+            <div>
+              <h3>Editar informacion</h3>
+              <p>Cambio tu horario, vehiculo o dias de viaje? Avisanos y lo actualizamos.</p>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-card-icon icon-delete">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18"/>
+                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+              </svg>
+            </div>
+            <div>
+              <h3>Borrar informacion</h3>
+              <p>No viajas mas? Te eliminamos del listado sin problema.</p>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-card-icon icon-add">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M8 12h8"/>
+                <path d="M12 8v8"/>
+              </svg>
+            </div>
+            <div>
+              <h3>Agregar servicio</h3>
+              <p>Viajas entre el pueblo y la ciudad? Sumate al listado y que te encuentren.</p>
+            </div>
+          </div>
+        </div>
+
+        <ContactForm />
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .contacto-hero {
+    text-align: center;
+    padding: var(--space-2xl) 0 var(--space-xl);
+  }
+
+  .page-title {
+    font-size: var(--font-size-3xl);
+    font-weight: 800;
+    color: var(--color-text);
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-sm);
+  }
+
+  .page-subtitle {
+    font-size: var(--font-size-base);
+    color: var(--color-text-muted);
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  .contacto-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl);
+    align-items: start;
+  }
+
+  .info-heading {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: var(--space-lg);
+  }
+
+  .info-card {
+    display: flex;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-md);
+    transition: all var(--transition);
+  }
+
+  .info-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .info-card-icon {
+    width: 44px;
+    height: 44px;
+    background: rgba(249, 115, 22, 0.1);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .icon-delete {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--color-error);
+  }
+
+  .icon-add {
+    background: rgba(34, 197, 94, 0.1);
+    color: var(--color-success);
+  }
+
+  .info-card h3 {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 4px;
+  }
+
+  .info-card p {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    .contacto-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .page-title {
+      font-size: var(--font-size-2xl);
+    }
+  }
+</style>

@@ -1,0 +1,98 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3 class="footer-title">Ruta Express</h3>
+        <p class="footer-desc">Informacion de transporte para tu pueblo. Horarios, rutas y contactos en un solo lugar.</p>
+      </div>
+      <div class="footer-links">
+        <h4 class="footer-heading">Navegacion</h4>
+        <a href="/" class="footer-link">Transportes</a>
+        <a href="/contacto" class="footer-link">Contacto</a>
+      </div>
+      <div class="footer-links">
+        <h4 class="footer-heading">Legal</h4>
+        <a href="/privacidad" class="footer-link">Politica de Privacidad</a>
+        <p class="footer-link muted">Los horarios pueden variar</p>
+        <p class="footer-link muted">Consulte directamente con el transportista</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; {year} Ruta Express por <a href="https://lucianobarberis.com.ar" target="_blank">Luciano Barberis</a></p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--color-primary);
+    color: rgba(255, 255, 255, 0.8);
+    padding: var(--space-2xl) 0 0;
+    margin-top: auto;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: var(--space-xl);
+    padding-bottom: var(--space-xl);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .footer-title {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: white;
+    margin-bottom: var(--space-sm);
+  }
+
+  .footer-desc {
+    font-size: var(--font-size-sm);
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.6;
+  }
+
+  .footer-heading {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--space-sm);
+  }
+
+  .footer-link {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    margin-bottom: 6px;
+    transition: color var(--transition);
+  }
+
+  .footer-link:hover {
+    color: white;
+  }
+
+  .footer-link.muted {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .footer-bottom {
+    padding: var(--space-lg) 0;
+    text-align: center;
+    font-size: var(--font-size-xs);
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  @media (max-width: 640px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+    }
+  }
+</style>

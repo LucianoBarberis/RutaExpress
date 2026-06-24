@@ -1,0 +1,331 @@
+---
+interface Props {
+  origenes: string[];
+}
+
+const { origenes } = Astro.props;
+---
+
+<div class="filtros" id="filtros">
+  <div class="filtro-row">
+    <div class="filtro-tipos">
+      <label class="check-label">
+        <input type="checkbox" name="tipo" value="colectivo" checked />
+        <span class="check-mark"></span>
+        Colectivo
+      </label>
+      <label class="check-label">
+        <input type="checkbox" name="tipo" value="comisionista" checked />
+        <span class="check-mark"></span>
+        Comisionista
+      </label>
+    </div>
+
+    <div class="filtro-controls">
+      <select id="origen" name="origen" class="filtro-select">
+        <option value="">Todos los origenes</option>
+        {origenes.map((o) => (
+          <option value={o}>{o}</option>
+        ))}
+      </select>
+
+      <select id="dia" name="dia" class="filtro-select">
+        <option value="">Todos los dias</option>
+        <option value="Lunes">Lunes</option>
+        <option value="Martes">Martes</option>
+        <option value="Miércoles">Miércoles</option>
+        <option value="Jueves">Jueves</option>
+        <option value="Viernes">Viernes</option>
+        <option value="Sábado">Sábado</option>
+        <option value="Domingo">Domingo</option>
+      </select>
+
+      <div class="search-wrap">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.3-4.3" />
+        </svg>
+        <input
+          type="text"
+          id="buscar"
+          name="buscar"
+          placeholder="Buscar..."
+          class="filtro-input"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="filtro-bar">
+    <div class="filtro-count">
+      <span id="result-count">4</span> servicios encontrados
+    </div>
+    <button class="filtro-reset" id="filtro-reset" type="button">Limpiar filtros</button>
+  </div>
+</div>
+
+<script>
+  function initFiltros() {
+    const checkboxes = document.querySelectorAll<HTMLInputElement>('input[name="tipo"]');
+    const selectOrigen = document.querySelector<HTMLSelectElement>('#origen');
+    const selectDia = document.querySelector<HTMLSelectElement>('#dia');
+    const inputBuscar = document.querySelector<HTMLInputElement>('#buscar');
+    const rows = document.querySelectorAll<HTMLElement>('.transporte-row, .card-mobile');
+    const resultCount = document.getElementById('result-count');
+    const resetBtn = document.getElementById('filtro-reset');
+    const sinResultados = document.getElementById('sin-resultados');
+
+    function filtrar() {
+      const tipos = Array.from(checkboxes)
+        .filter((cb) => cb.checked)
+        .map((cb) => cb.value);
+
+      const origen = selectOrigen?.value || '';
+      const dia = selectDia?.value || '';
+      const buscar = (inputBuscar?.value || '').toLowerCase();
+      let visibles = 0;
+
+      rows.forEach((row) => {
+        const tipo = row.dataset.tipo || '';
+        const origenRow = row.dataset.origen || '';
+        const dias = (row.dataset.dias || '').split(',');
+        const texto = row.textContent?.toLowerCase() || '';
+
+        const coincideTipo = tipos.includes(tipo);
+        const coincideOrigen = !origen || origenRow === origen;
+        const coincideDia = !dia || dias.includes(dia);
+        const coincideBuscar = !buscar || texto.includes(buscar);
+
+        const visible = coincideTipo && coincideOrigen && coincideDia && coincideBuscar;
+        row.classList.toggle('hidden', !visible);
+        if (visible) visibles++;
+      });
+
+      if (resultCount) resultCount.textContent = String(visibles);
+      if (sinResultados) {
+        sinResultados.classList.toggle('hidden', visibles > 0);
+      }
+    }
+
+    function limpiar() {
+      checkboxes.forEach((cb) => cb.checked = true);
+      if (selectOrigen) selectOrigen.value = '';
+      if (selectDia) selectDia.value = '';
+      if (inputBuscar) inputBuscar.value = '';
+      filtrar();
+    }
+
+    checkboxes.forEach((cb) => cb.addEventListener('change', filtrar));
+    selectOrigen?.addEventListener('change', filtrar);
+    selectDia?.addEventListener('change', filtrar);
+    inputBuscar?.addEventListener('input', filtrar);
+    resetBtn?.addEventListener('click', limpiar);
+  }
+
+  document.addEventListener('astro:page-load', initFiltros);
+  initFiltros();
+</script>
+
+<style>
+  .filtros {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    margin-bottom: var(--space-xl);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .filtro-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-lg);
+    padding: var(--space-xl);
+    align-items: center;
+  }
+
+  .filtro-tipos {
+    display: flex;
+    gap: var(--space-lg);
+  }
+
+  .check-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--color-text);
+    cursor: pointer;
+    user-select: none;
+    padding: 6px 0;
+  }
+
+  .check-label input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .check-mark {
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--color-border);
+    border-radius: 4px;
+    position: relative;
+    transition: all var(--transition);
+    flex-shrink: 0;
+  }
+
+  .check-label input:checked + .check-mark {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .check-label input:checked + .check-mark::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 6px;
+    height: 11px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  .check-label input:focus-visible + .check-mark {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .filtro-controls {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+    margin-left: auto;
+  }
+
+  .filtro-select {
+    padding: 10px 36px 10px 16px;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-family: inherit;
+    background: var(--color-surface);
+    color: var(--color-text);
+    min-width: 180px;
+    cursor: pointer;
+    transition: border-color var(--transition);
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+  }
+
+  .filtro-select:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12);
+  }
+
+  .search-wrap {
+    position: relative;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-muted);
+    pointer-events: none;
+  }
+
+  .filtro-input {
+    padding: 10px 16px 10px 40px;
+    border: 1.5px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+    font-family: inherit;
+    background: var(--color-surface);
+    color: var(--color-text);
+    width: 200px;
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+
+  .filtro-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12);
+  }
+
+  .filtro-input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  .filtro-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px var(--space-xl);
+    background: #f8fafc;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .filtro-count {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+
+  .filtro-count span {
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .filtro-reset {
+    background: none;
+    border: none;
+    font-size: var(--font-size-sm);
+    color: var(--color-accent);
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: var(--radius-md);
+    transition: all var(--transition);
+    font-family: inherit;
+  }
+
+  .filtro-reset:hover {
+    background: rgba(249, 115, 22, 0.1);
+  }
+
+  @media (max-width: 640px) {
+    .filtro-row {
+      flex-direction: column;
+      padding: var(--space-lg);
+      gap: var(--space-md);
+    }
+
+    .filtro-controls {
+      margin-left: 0;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .filtro-select,
+    .filtro-input {
+      width: 100%;
+    }
+
+    .search-wrap {
+      width: 100%;
+    }
+
+    .filtro-bar {
+      padding: 10px var(--space-lg);
+    }
+  }
+</style>
