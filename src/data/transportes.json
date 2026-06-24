@@ -63,19 +63,27 @@
       "telefono": "+54 9 3415462011",
       "ultima_actualizacion":"2026-06-24",
       "vehiculo": "Toyota Hiace"
+    },
+    {
+      "id": "walter-almada",
+      "nombre": "Walter Almada",
+      "tipo": "comisionista",
+      "telefono": "+54 9 3415614330",
+      "ultima_actualizacion":"2026-06-24",
+      "vehiculo": "Renault Kangoo"
     }
   ],
   "viajes": [
     {
       "id": 0,
       "empresa_id": "gerardo-gerlo",
-      "origen": "Chañar Ladeado",
+      "origen": "Los Quirquinchos/Zona",
       "destino": "Rosario",
       "horarios": [
-        { "dias": ["Martes", "Jueves"], "salida": "18:00", "llegada": "20:30" }
+        { "dias": ["Martes", "Jueves"], "salida": "06:00", "llegada": "09:00" }
       ],
       "feriados": false,
-      "observaciones": ""
+      "observaciones": "Consultar por viajes especiales."
     },
     {
       "id": 1,
@@ -240,7 +248,7 @@
       "origen": "Chañar Ladeado",
       "destino": "Rosario",
       "horarios": [
-        { "dias": ["Lunes", "Martes",  "Jueves"], "salida": "16:30", "llegada": "19:30" }
+        { "dias": ["Lunes", "Martes",  "Jueves"], "salida": "04:30", "llegada": "07:30" }
       ],
       "feriados": false,
       "observaciones": "Servicio de Wifi abordo | Traslados especiales a cualquier punto del país"
@@ -255,6 +263,50 @@
       ],
       "feriados": false,
       "observaciones": "Servicio de Wifi abordo | Traslados especiales a cualquier punto del país"
+    },
+    {
+      "id": 18,
+      "empresa_id": "walter-almada",
+      "origen": "Chañar Ladeado",
+      "destino": "Rosario",
+      "horarios": [
+        { "dias": ["Miércoles", "Viernes"], "salida": "05:30", "llegada": "07:30" }
+      ],
+      "feriados": false,
+      "observaciones": "Viajes a todo el país | Servicio de paqueteria"
+    },
+    {
+      "id": 19,
+      "empresa_id": "walter-almada",
+      "origen": "Rosario",
+      "destino": "Chañar Ladeado",
+      "horarios": [
+        { "dias": ["Miércoles", "Viernes"], "salida": "14:00", "llegada": "16:30" }
+      ],
+      "feriados": false,
+      "observaciones": "Viajes a todo el país | Servicio de paqueteria"
+    },
+    {
+      "id": 20,
+      "empresa_id": "gerardo-gerlo",
+      "origen": "Rosario",
+      "destino": "Los Quirquinchos/Zona",
+      "horarios": [
+        { "dias": ["Martes", "Jueves"], "salida": "17:00", "llegada": "19:30" }
+      ],
+      "feriados": false,
+      "observaciones": "Consultar por viajes especiales."
+    },
+    {
+      "id": 21,
+      "empresa_id": "gerardo-gerlo",
+      "origen": "Rosario",
+      "destino": "Los Quirquinchos/Zona",
+      "horarios": [
+        { "dias": ["Viernes", "Domingo"], "salida": "19:00", "llegada": "21:30" }
+      ],
+      "feriados": false,
+      "observaciones": "Consultar por viajes especiales."
     }
   ]
 }
