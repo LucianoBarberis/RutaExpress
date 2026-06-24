@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://rutaexpress.vercel.app/sitemap-index.xml
+Sitemap: https://rutaexpress.com.ar/sitemap-index.xml
