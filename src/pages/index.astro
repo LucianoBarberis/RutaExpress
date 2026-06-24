@@ -138,6 +138,7 @@ const grupos: Grupo[] = sortedEmpresas.map((empresa) => {
           <span class="table-count">{empresas.length} empresas · {viajes.length} viajes</span>
         </div>
 
+        <div id="grupos-container">
         {grupos.map(({ empresa, rutas }) => {
           const todosDias = [...new Set(rutas.flatMap((r) => r.viajes.flatMap((v) => v.horarios.flatMap((h) => h.dias))))];
           return (
@@ -275,6 +276,7 @@ const grupos: Grupo[] = sortedEmpresas.map((empresa) => {
             </details>
           );
         })}
+        </div>
 
         <p class="sin-resultados hidden" id="sin-resultados">
           No se encontraron servicios con esos filtros.
@@ -292,6 +294,34 @@ const grupos: Grupo[] = sortedEmpresas.map((empresa) => {
 
   <Footer />
 </Layout>
+
+<script is:inline>
+  function shuffleEmpresas() {
+    var container = document.getElementById('grupos-container');
+    if (!container) return;
+
+    var grupos = Array.from(container.children);
+    var comisionistas = grupos.filter(function(g) { return g.dataset.tipo === 'comisionista'; });
+    var colectivos = grupos.filter(function(g) { return g.dataset.tipo === 'colectivo'; });
+
+    function fisherYates(arr) {
+      var a = arr.slice();
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = a[i];
+        a[i] = a[j];
+        a[j] = tmp;
+      }
+      return a;
+    }
+
+    var orden = fisherYates(comisionistas).concat(fisherYates(colectivos));
+    orden.forEach(function(g) { container.appendChild(g); });
+  }
+
+  document.addEventListener('astro:page-load', shuffleEmpresas);
+  shuffleEmpresas();
+</script>
 
 <style>
   /* ===== Hero ===== */
