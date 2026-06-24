@@ -1,212 +1,230 @@
-[
-  {
-    "id": 0,
-    "tipo": "comisionista",
-    "nombre": "Gerardo Gerlo",
-    "telefono": "+54 9 3465 65-8701",
-    "vehiculo": "Renault Kangoo",
-    "origen": "Chañar Ladeado",
-    "destino": "Rosario",
-    "horario_salida": "18:00",
-    "horario_llegada": "20:30",
-    "dias": ["Martes", "Jueves"],
-    "observaciones": "",
-    "ultima_actualizacion": "2026-06-23"
-  },
-  {
-    "id": 1,
-    "tipo": "colectivo",
-    "nombre": "Los Ranqueles",
-    "telefono": "+543414338457",
-    "vehiculo": "",
-    "origen": "Rosario",
-    "destino": "Chañar Ladeado",
-    "horario_salida": "09:00",
-    "horario_llegada": "12:17",
-    "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
-    "observaciones": "Aire acondicionado",
-    "ultima_actualizacion": "2026-06-23"
-  },
-  {
-    "id": 2,
-    "tipo": "colectivo",
-    "nombre": "33/9 Azul América",
-    "telefono": "+54 9 341-5-821917",
-    "vehiculo": "",
-    "origen": "Rosario",
-    "destino": "Chañar Ladeado",
-    "horario_salida": "13:00",
-    "horario_llegada": "16:01",
-    "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo", "Feriados"],
-    "observaciones": "Aire acondicionado",
-    "ultima_actualizacion": "2026-06-23"
-  },
-  {
-    "id": 3,
-    "tipo": "colectivo",
-    "nombre": "Los Ranqueles",
-    "telefono": "+543414338457",
-    "vehiculo": "",
-    "origen": "Rosario",
-    "destino": "Chañar Ladeado",
-    "horario_salida": "16:45",
-    "horario_llegada": "20:07",
-    "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo", "Feriados"],
-    "observaciones": "Aire acondicionado",
-    "ultima_actualizacion": "2026-06-23"
-  },
-  {
-    "id": 4,
-    "tipo": "colectivo",
-    "nombre": "Los Ranqueles",
-    "telefono": "+543414338457",
-    "vehiculo": "",
-    "origen": "Chañar Ladeado",
-    "destino": "Rosario",
-    "horario_salida": "04:00",
-    "horario_llegada": "06:59",
-    "dias": ["Sábado"],
-    "observaciones": "Aire acondicionado",
-    "ultima_actualizacion": "2026-06-23"
-  },
-  {
-    "id": 5,
-    "tipo": "colectivo",
-    "nombre": "Los Ranqueles",
-    "telefono": "+543414338457",
-    "vehiculo": "",
-    "origen": "Chañar Ladeado",
-    "destino": "Rosario",
-    "horario_salida": "06:00",
-    "horario_llegada": "09:27",
-    "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
-    "observaciones": "Aire acondicionado",
-    "ultima_actualizacion": "2026-06-23"
-  },
-  {
-    "id": 6,
-    "tipo": "colectivo",
-    "nombre": "Los Ranqueles",
-    "telefono": "+543414338457",
-    "vehiculo": "",
-    "origen": "Chañar Ladeado",
-    "destino": "Rosario",
-    "horario_salida": "15:00",
-    "horario_llegada": "18:17",
-    "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo", "Feriados"],
-    "observaciones": "Aire acondicionado",
-    "ultima_actualizacion": "2026-06-23"
-  },
-  {
-    "id": 7,
-    "tipo": "colectivo",
-    "nombre": "Los Ranqueles",
-    "telefono": "+543414338457",
-    "vehiculo": "",
-    "origen": "Chañar Ladeado",
-    "destino": "Rosario",
-    "horario_salida": "15:00",
-    "horario_llegada": "18:17",
-    "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo", "Feriados"],
-    "observaciones": "Aire acondicionado",
-    "ultima_actualizacion": "2026-06-23"
-  },
-  {
-    "id": 8,
-    "tipo": "colectivo",
-    "nombre": "33/9 Azul América",
-    "telefono": "+54 9 341-5-821917",
-    "vehiculo": "",
-    "origen": "Chañar Ladeado",
-    "destino": "Rosario",
-    "horario_salida": "19:50",
-    "horario_llegada": "22:51",
-    "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo", "Feriados"],
-    "observaciones": "Aire acondicionado",
-    "ultima_actualizacion": "2026-06-23"
-  },
-  {
-    "id": 9,
-    "tipo": "comisionista",
-    "nombre": "Turismo Bertero",
-    "telefono": "+54 9 3468536020",
-    "vehiculo": "",
-    "origen": "Chañar Ladeado",
-    "destino": "Rosario",
-    "horario_salida": "10:30",
-    "horario_llegada": "13:30",
-    "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"],
-    "observaciones": "",
-    "ultima_actualizacion": "2026-06-23"
-  },
+{
+  "empresas": [
     {
-    "id": 10,
-    "tipo": "comisionista",
-    "nombre": "Turismo Bertero",
-    "telefono": "+54 9 3468536020",
-    "vehiculo": "",
-    "origen": "Rosario",
-    "destino": "Chañar Ladeado",
-    "horario_salida": "18:00",
-    "horario_llegada": "21:00",
-    "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"],
-    "observaciones": "Encuentro en plaza Sarmiento, entre Entre Ríos San Juan y Mendoza",
-    "ultima_actualizacion": "2026-06-23"
-  },
-  {
-    "id": 11,
-    "tipo": "comisionista",
-    "nombre": "Gisala Sicacardi",
-    "telefono": "+54 9 3412788918",
-    "vehiculo": "Renault Kangoo",
-    "origen": "Rosario",
-    "destino": "Chañar Ladeado",
-    "horario_salida": "19:30 9:30",
-    "horario_llegada": "22:00 & 12:00",
-    "dias": ["Viernes", "Sábado"],
-    "observaciones": "Viernes: 19:30; Sábado: 9:30",
-    "ultima_actualizacion": "2026-06-23"
-  },
-  {
-    "id": 12,
-    "tipo": "comisionista",
-    "nombre": "Gisala Sicacardi",
-    "telefono": "+54 9 3412788918",
-    "vehiculo": "Renault Kangoo",
-    "origen": "Chañar Ladeado",
-    "destino": "Rosario",
-    "horario_salida": "22:30 & 12:30 & 19:00",
-    "horario_llegada": "00:30 & 14:30 & 21:30",
-    "dias": ["Viernes", "Sábado", "Domingo"],
-    "observaciones": "Viernes: 22:30; Sábado: 12:30; Domingo: 19:00",
-    "ultima_actualizacion": "2026-06-23"
-  },
-  {
-    "id": 13,
-    "tipo": "comisionista",
-    "nombre": "Ignacio Aramburu",
-    "telefono": "+54 9 3468500211",
-    "vehiculo": "Renault Kangoo",
-    "origen": "Chañar Ladeado",
-    "destino": "Rosario",
-    "horario_salida": "05:30",
-    "horario_llegada": "08:00",
-    "dias": ["Lunes", "Martes", "Jueves", "Viernes"],
-    "observaciones": "",
-    "ultima_actualizacion": "2026-06-23"
-  },
-  {
-    "id": 14,
-    "tipo": "comisionista",
-    "nombre": "Ignacio Aramburu",
-    "telefono": "+54 9 3468500211",
-    "vehiculo": "Renault Kangoo",
-    "origen": "Rosario",
-    "destino": "Chañar Ladeado",
-    "horario_salida": "12:30",
-    "horario_llegada": "15:30",
-    "dias": ["Lunes", "Martes", "Jueves", "Viernes"],
-    "observaciones": "",
-    "ultima_actualizacion": "2026-06-23"
-  }
-]
+      "id": "gerardo-gerlo",
+      "nombre": "Gerardo Gerlo",
+      "tipo": "comisionista",
+      "telefono": "+54 9 3465 65-8701",
+      "vehiculo": "Renault Kangoo",
+      "ultima_actualizacion": "2026-06-23"
+    },
+    {
+      "id": "los-ranqueles",
+      "nombre": "Los Ranqueles",
+      "tipo": "colectivo",
+      "telefono": "+543414338457",
+      "vehiculo": "",
+      "ultima_actualizacion": "2026-06-23"
+    },
+    {
+      "id": "33-9-azul-america",
+      "nombre": "33/9 Azul América",
+      "tipo": "colectivo",
+      "telefono": "+54 9 341-5-821917",
+      "vehiculo": "",
+      "ultima_actualizacion": "2026-06-23"
+    },
+    {
+      "id": "turismo-bertero",
+      "nombre": "Turismo Bertero",
+      "tipo": "comisionista",
+      "telefono": "+54 9 3468536020",
+      "vehiculo": "",
+      "ultima_actualizacion": "2026-06-23"
+    },
+    {
+      "id": "gisala-sicacardi",
+      "nombre": "Gisala Sicacardi",
+      "tipo": "comisionista",
+      "telefono": "+54 9 3412788918",
+      "vehiculo": "Renault Kangoo",
+      "ultima_actualizacion": "2026-06-23"
+    },
+    {
+      "id": "ignacio-aramburu",
+      "nombre": "Ignacio Aramburu",
+      "tipo": "comisionista",
+      "telefono": "+54 9 3468500211",
+      "vehiculo": "Renault Kangoo",
+      "ultima_actualizacion": "2026-06-23"
+    },
+    {
+      "id": "agustin-baro",
+      "nombre": "Agustin Baro",
+      "tipo":"comisionista",
+      "telefono":"+54 9 3415595015",
+      "vehiculo":"Renault Kangoo",
+      "ultima_actualizacion":"2026-06-24"
+    }
+  ],
+  "viajes": [
+    {
+      "id": 0,
+      "empresa_id": "gerardo-gerlo",
+      "origen": "Chañar Ladeado",
+      "destino": "Rosario",
+      "horarios": [
+        { "dias": ["Martes", "Jueves"], "salida": "18:00", "llegada": "20:30" }
+      ],
+      "feriados": false,
+      "observaciones": ""
+    },
+    {
+      "id": 1,
+      "empresa_id": "los-ranqueles",
+      "origen": "Rosario",
+      "destino": "Chañar Ladeado",
+      "horarios": [
+        { "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"], "salida": "09:00", "llegada": "12:17" }
+      ],
+      "feriados": false,
+      "observaciones": "Aire acondicionado"
+    },
+    {
+      "id": 2,
+      "empresa_id": "33-9-azul-america",
+      "origen": "Rosario",
+      "destino": "Chañar Ladeado",
+      "horarios": [
+        { "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"], "salida": "13:00", "llegada": "16:01" }
+      ],
+      "feriados": true,
+      "observaciones": "Aire acondicionado"
+    },
+    {
+      "id": 3,
+      "empresa_id": "los-ranqueles",
+      "origen": "Rosario",
+      "destino": "Chañar Ladeado",
+      "horarios": [
+        { "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"], "salida": "16:45", "llegada": "20:07" }
+      ],
+      "feriados": true,
+      "observaciones": "Aire acondicionado"
+    },
+    {
+      "id": 4,
+      "empresa_id": "los-ranqueles",
+      "origen": "Chañar Ladeado",
+      "destino": "Rosario",
+      "horarios": [
+        { "dias": ["Sábado"], "salida": "04:00", "llegada": "06:59" }
+      ],
+      "feriados": false,
+      "observaciones": "Aire acondicionado"
+    },
+    {
+      "id": 5,
+      "empresa_id": "los-ranqueles",
+      "origen": "Chañar Ladeado",
+      "destino": "Rosario",
+      "horarios": [
+        { "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"], "salida": "06:00", "llegada": "09:27" }
+      ],
+      "feriados": false,
+      "observaciones": "Aire acondicionado"
+    },
+    {
+      "id": 6,
+      "empresa_id": "los-ranqueles",
+      "origen": "Chañar Ladeado",
+      "destino": "Rosario",
+      "horarios": [
+        { "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"], "salida": "15:00", "llegada": "18:17" }
+      ],
+      "feriados": true,
+      "observaciones": "Aire acondicionado"
+    },
+    {
+      "id": 8,
+      "empresa_id": "33-9-azul-america",
+      "origen": "Chañar Ladeado",
+      "destino": "Rosario",
+      "horarios": [
+        { "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"], "salida": "19:50", "llegada": "22:51" }
+      ],
+      "feriados": true,
+      "observaciones": "Aire acondicionado"
+    },
+    {
+      "id": 9,
+      "empresa_id": "turismo-bertero",
+      "origen": "Chañar Ladeado",
+      "destino": "Rosario",
+      "horarios": [
+        { "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"], "salida": "10:30", "llegada": "13:30" }
+      ],
+      "feriados": false,
+      "observaciones": ""
+    },
+    {
+      "id": 10,
+      "empresa_id": "turismo-bertero",
+      "origen": "Rosario",
+      "destino": "Chañar Ladeado",
+      "horarios": [
+        { "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"], "salida": "18:00", "llegada": "21:00" }
+      ],
+      "feriados": false,
+      "observaciones": "Encuentro en plaza Sarmiento, entre Entre Ríos San Juan y Mendoza"
+    },
+    {
+      "id": 11,
+      "empresa_id": "gisala-sicacardi",
+      "origen": "Rosario",
+      "destino": "Chañar Ladeado",
+      "horarios": [
+        { "dias": ["Viernes"], "salida": "19:30", "llegada": "22:00" },
+        { "dias": ["Sábado"], "salida": "9:30", "llegada": "12:00" }
+      ],
+      "feriados": false,
+      "observaciones": ""
+    },
+    {
+      "id": 12,
+      "empresa_id": "gisala-sicacardi",
+      "origen": "Chañar Ladeado",
+      "destino": "Rosario",
+      "horarios": [
+        { "dias": ["Viernes"], "salida": "22:30", "llegada": "00:30" },
+        { "dias": ["Sábado"], "salida": "12:30", "llegada": "14:30" },
+        { "dias": ["Domingo"], "salida": "19:00", "llegada": "21:30" }
+      ],
+      "feriados": false,
+      "observaciones": ""
+    },
+    {
+      "id": 13,
+      "empresa_id": "ignacio-aramburu",
+      "origen": "Chañar Ladeado",
+      "destino": "Rosario",
+      "horarios": [
+        { "dias": ["Lunes", "Martes", "Jueves", "Viernes"], "salida": "05:30", "llegada": "08:00" }
+      ],
+      "feriados": false,
+      "observaciones": ""
+    },
+    {
+      "id": 14,
+      "empresa_id": "ignacio-aramburu",
+      "origen": "Rosario",
+      "destino": "Chañar Ladeado",
+      "horarios": [
+        { "dias": ["Lunes", "Martes", "Jueves", "Viernes"], "salida": "12:30", "llegada": "15:30" }
+      ],
+      "feriados": false,
+      "observaciones": ""
+    },
+    {
+      "id": 15,
+      "empresa_id": "agustin-baro",
+      "origen": "Rosario",
+      "destino": "Chañar Ladeado",
+      "horarios": [
+        { "dias": ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"], "salida": "13:00", "llegada": "16:00" }
+      ],
+      "feriados": false,
+      "observaciones": ""
+    }
+  ]
+}

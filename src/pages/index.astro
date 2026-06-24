@@ -4,7 +4,14 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Filtros from '../components/Filtros.astro';
 import AdBanner from '../components/AdBanner.astro';
-import transportes from '../data/transportes.json';
+import data from '../data/transportes.json';
+
+const { empresas, viajes } = data;
+
+const DIAS_SEMANA = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'] as const;
+const DIA_ABBR: Record<string, string> = {
+  Lunes: 'L', Martes: 'M', 'Miércoles': 'X', Jueves: 'J', Viernes: 'V', Sábado: 'S', Domingo: 'D',
+};
 
 function formatPhone(tel: string): string {
   return tel.replace(/[^0-9+]/g, '');
@@ -15,21 +22,41 @@ function whatsappUrl(tel: string): string {
   return `https://wa.me/${clean}`;
 }
 
-function parseHorarios(salida: string, llegada: string): { salida: string; llegada: string }[] {
-  const salidas = salida.split('&').map((s) => s.trim());
-  const llegadas = llegada.split('&').map((s) => s.trim());
-  const max = Math.max(salidas.length, llegadas.length);
-  const pairs: { salida: string; llegada: string }[] = [];
-  for (let i = 0; i < max; i++) {
-    pairs.push({ salida: salidas[i] || '', llegada: llegadas[i] || '' });
-  }
-  return pairs;
-}
+const empresaMap = new Map(empresas.map((e) => [e.id, e]));
 
-const origenes = [...new Set(transportes.map((t) => t.origen))];
-const sortedTransportes = [...transportes].sort((a, b) => {
+const origenes = [...new Set(viajes.map((t) => t.origen))];
+
+const sortedEmpresas = [...empresas].sort((a, b) => {
   if (a.tipo === b.tipo) return 0;
   return a.tipo === 'comisionista' ? -1 : 1;
+});
+
+interface RutaGroup {
+  origen: string;
+  destino: string;
+  viajes: (typeof viajes)[number][];
+}
+
+interface Grupo {
+  empresa: (typeof empresas)[number];
+  rutas: RutaGroup[];
+}
+
+const grupos: Grupo[] = sortedEmpresas.map((empresa) => {
+  const vjs = viajes.filter((v) => v.empresa_id === empresa.id);
+  const rutaMap = new Map<string, (typeof viajes)[number][]>();
+  for (const v of vjs) {
+    const key = `${v.origen}|${v.destino}`;
+    if (!rutaMap.has(key)) rutaMap.set(key, []);
+    rutaMap.get(key)!.push(v);
+  }
+  return {
+    empresa,
+    rutas: Array.from(rutaMap.entries()).map(([key, viajes]) => {
+      const [origen, destino] = key.split('|');
+      return { origen, destino, viajes };
+    }),
+  };
 });
 ---
 
@@ -108,119 +135,22 @@ const sortedTransportes = [...transportes].sort((a, b) => {
             </svg>
             Servicios disponibles
           </h2>
-          <span class="table-count">{transportes.length} servicios</span>
+          <span class="table-count">{empresas.length} empresas · {viajes.length} viajes</span>
         </div>
 
-        <!-- Vista tabla (escritorio) -->
-        <div class="table-wrap">
-          <table class="tabla">
-            <thead>
-              <tr>
-                <th>Tipo</th>
-                <th>Empresa / Chofer</th>
-                <th class="hide-mobile">Vehiculo</th>
-                <th>Origen</th>
-                <th>Destino</th>
-                <th class="hide-mobile">Salida</th>
-                <th class="hide-mobile">Llegada</th>
-                <th class="hide-tablet">Dias</th>
-                <th>Contacto</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedTransportes.map((t, i) => (
-                <tr
-                  class="transporte-row"
-                  data-tipo={t.tipo}
-                  data-origen={t.origen}
-                  data-dias={t.dias.join(',')}
-                  style={`animation-delay: ${i * 0.04}s`}
-                >
-                  <td data-label="Tipo">
-                    <span class:list={['badge', t.tipo === 'colectivo' ? 'badge-colectivo' : 'badge-comisionista']}>
-                      {t.tipo === 'colectivo' ? 'Colectivo' : 'Comisionista'}
-                    </span>
-                  </td>
-                  <td data-label="Empresa" class="cell-name">{t.nombre}</td>
-                  <td data-label="Vehiculo" class="hide-mobile">{t.vehiculo}</td>
-                  <td data-label="Origen" class="cell-city">{t.origen}</td>
-                  <td data-label="Destino" class="cell-city">{t.destino}</td>
-                  <td data-label="Salida" class="cell-time hide-mobile">
-                    {parseHorarios(t.horario_salida, t.horario_llegada).map(p => <div>{p.salida}</div>)}
-                  </td>
-                  <td data-label="Llegada" class="cell-time hide-mobile">
-                    {parseHorarios(t.horario_salida, t.horario_llegada).map(p => <div>{p.llegada}</div>)}
-                  </td>
-                  <td data-label="Dias" class="hide-tablet">
-                    <span class="dias-list">{t.dias.join(', ')}</span>
-                  </td>
-                  <td data-label="Contacto">
-                    <a
-                      href={whatsappUrl(t.telefono)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="btn-whatsapp"
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-                        <path d="M12 2C6.477 2 2 6.477 2 12c0 1.88.515 3.642 1.416 5.14L2 22l4.86-1.416A9.967 9.967 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
-                      </svg>
-                      <span class="btn-label">WhatsApp</span>
-                    </a>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Vista cards (mobile) -->
-        <div class="cards-mobile">
-          {sortedTransportes.map((t, i) => (
-            <article
-              class="card-mobile"
-              data-tipo={t.tipo}
-              data-origen={t.origen}
-              data-dias={t.dias.join(',')}
-              style={`animation-delay: ${i * 0.04}s`}
-            >
-              <div class="card-mobile-header">
-                <span class:list={['badge', t.tipo === 'colectivo' ? 'badge-colectivo' : 'badge-comisionista']}>
-                  {t.tipo === 'colectivo' ? 'Colectivo' : 'Comisionista'}
+        {grupos.map(({ empresa, rutas }) => {
+          const todosDias = [...new Set(rutas.flatMap((r) => r.viajes.flatMap((v) => v.horarios.flatMap((h) => h.dias))))];
+          return (
+            <details class="grupo-empresa" data-tipo={empresa.tipo} data-origen={rutas.map((r) => r.origen).join(',')} data-dias={todosDias.join(',')}>
+              <summary class="grupo-summary">
+                <span class:list={['badge', empresa.tipo === 'colectivo' ? 'badge-colectivo' : 'badge-comisionista']}>
+                  {empresa.tipo === 'colectivo' ? 'Colectivo' : 'Comisionista'}
                 </span>
-                <span class="card-mobile-name">{t.nombre}</span>
-              </div>
-              <div class="card-mobile-body">
-                <div class="card-mobile-row">
-                  <span class="card-mobile-label">Vehiculo</span>
-                  <span class="card-mobile-value">{t.vehiculo}</span>
-                </div>
-                <div class="card-mobile-row">
-                  <span class="card-mobile-label">Ruta</span>
-                  <span class="card-mobile-value route">{t.origen} &rarr; {t.destino}</span>
-                </div>
-                <div class="card-mobile-row">
-                  <span class="card-mobile-label">Horario</span>
-                  <span class="card-mobile-value">
-                    {parseHorarios(t.horario_salida, t.horario_llegada).map(p => (
-                      <div>{p.salida} — {p.llegada}</div>
-                    ))}
-                  </span>
-                </div>
-                <div class="card-mobile-row">
-                  <span class="card-mobile-label">Dias</span>
-                  <span class="card-mobile-value">{t.dias.join(', ')}</span>
-                </div>
-                {t.observaciones && (
-                  <div class="card-mobile-row">
-                    <span class="card-mobile-label">Nota</span>
-                    <span class="card-mobile-value note">{t.observaciones}</span>
-                  </div>
-                )}
-              </div>
-              <div class="card-mobile-footer">
+                <span class="grupo-nombre">{empresa.nombre}</span>
+                {empresa.vehiculo && <span class="grupo-vehiculo">{empresa.vehiculo}</span>}
+                <span class="grupo-count">{rutas.reduce((n, r) => n + r.viajes.length, 0)} viajes</span>
                 <a
-                  href={whatsappUrl(t.telefono)}
+                  href={whatsappUrl(empresa.telefono)}
                   target="_blank"
                   rel="noopener noreferrer"
                   class="btn-whatsapp"
@@ -229,12 +159,122 @@ const sortedTransportes = [...transportes].sort((a, b) => {
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
                     <path d="M12 2C6.477 2 2 6.477 2 12c0 1.88.515 3.642 1.416 5.14L2 22l4.86-1.416A9.967 9.967 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/>
                   </svg>
-                  {t.telefono}
+                  <span class="btn-label">WhatsApp</span>
                 </a>
+              </summary>
+
+              <div class="grupo-content">
+                <div class="grupo-inner">
+                  {rutas.map((ruta) => {
+                    const rutaDias = [...new Set(ruta.viajes.flatMap((v) => v.horarios.flatMap((h) => h.dias)))];
+                    return (
+                      <div class="ruta-group" data-origen={ruta.origen}>
+                        <div class="ruta-heading">
+                          <svg class="ruta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 6v6l4 2" />
+                          </svg>
+                          <span class="ruta-origen">{ruta.origen}</span>
+                          <svg class="ruta-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14" />
+                            <path d="m14 7 5 5-5 5" />
+                          </svg>
+                          <span class="ruta-destino">{ruta.destino}</span>
+                        </div>
+
+                        <!-- Desktop table -->
+                        <div class="table-wrap">
+                          <table class="tabla tabla-ruta">
+                            <thead>
+                              <tr>
+                                <th>Salida</th>
+                                <th>Llegada</th>
+                                <th>Días</th>
+                                <th class="note-col"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {ruta.viajes.flatMap((v) => {
+                                const allDias = [...new Set(v.horarios.flatMap((h) => h.dias))];
+                                return v.horarios.map((h, hi) => (
+                                  <tr
+                                    class="transporte-row"
+                                    data-tipo={empresa.tipo}
+                                    data-origen={v.origen}
+                                    data-dias={allDias.join(',')}
+                                    style={`animation-delay: ${(v.id % 10) * 0.04}s`}
+                                  >
+                                    <td data-label="Salida" class="cell-time">{h.salida}</td>
+                                    <td data-label="Llegada" class="cell-time">{h.llegada}</td>
+                                    <td data-label="Días" class="cell-dias">
+                                      <div class="day-dots">
+                                        {DIAS_SEMANA.map((day) => (
+                                          <span
+                                            class:list={['day-dot', h.dias.includes(day) && 'active']}
+                                            title={day}
+                                          >{DIA_ABBR[day]}</span>
+                                        ))}
+                                      </div>
+                                      {v.feriados && <span class="feriados-badge" title="También feriados">+F</span>}
+                                    </td>
+                                    <td data-label="Nota" class="note-col">
+                                      {hi === 0 && v.observaciones && <span class="obs-note">{v.observaciones}</span>}
+                                    </td>
+                                  </tr>
+                                ));
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        <!-- Mobile cards -->
+                        <div class="cards-mobile">
+                          {ruta.viajes.flatMap((v) => {
+                            const allDias = [...new Set(v.horarios.flatMap((h) => h.dias))];
+                            return v.horarios.map((h, hi) => (
+                              <article
+                                class="card-mobile"
+                                data-tipo={empresa.tipo}
+                                data-origen={v.origen}
+                                data-dias={allDias.join(',')}
+                                style={`animation-delay: ${(v.id % 10) * 0.04}s`}
+                              >
+                                <div class="card-mobile-row card-route-row">
+                                  <span class="card-mobile-value route">{v.origen} &rarr; {v.destino}</span>
+                                </div>
+                                <div class="card-time-row">
+                                  <span class="card-time-label">Sale</span>
+                                  <span class="card-time-value">{h.salida}</span>
+                                  <span class="card-time-sep">&rarr;</span>
+                                  <span class="card-time-label">Llega</span>
+                                  <span class="card-time-value">{h.llegada}</span>
+                                </div>
+                                <div class="card-dias-row">
+                                  <div class="day-dots">
+                                    {DIAS_SEMANA.map((day) => (
+                                      <span
+                                        class:list={['day-dot', h.dias.includes(day) && 'active']}
+                                        title={day}
+                                      >{DIA_ABBR[day]}</span>
+                                    ))}
+                                  </div>
+                                  {v.feriados && <span class="feriados-badge" title="También feriados">+F</span>}
+                                </div>
+                                {hi === 0 && v.observaciones && (
+                                  <div class="card-obs">{v.observaciones}</div>
+                                )}
+                              </article>
+                            ));
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </article>
-          ))}
-        </div>
+            </details>
+          );
+        })}
 
         <p class="sin-resultados hidden" id="sin-resultados">
           No se encontraron servicios con esos filtros.
@@ -343,57 +383,233 @@ const sortedTransportes = [...transportes].sort((a, b) => {
     border: 1px solid var(--color-border);
   }
 
-  /* ===== Desktop Table ===== */
-  .table-wrap {
+  /* ===== Grupo Empresa (details/summary) ===== */
+  .grupo-empresa {
+    margin-bottom: var(--space-lg);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
     overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .grupo-empresa[open] {
     box-shadow: var(--shadow-md);
+  }
+
+  .grupo-summary {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-lg);
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    background: #f8fafc;
+    border-bottom: 1px solid transparent;
+    transition: background-color 0.25s ease;
+  }
+
+  .grupo-empresa[open] .grupo-summary {
+    border-bottom-color: var(--color-border);
+    background: #f1f5f9;
+  }
+
+  .grupo-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .grupo-summary::before {
+    content: '▶';
+    font-size: 11px;
+    color: var(--color-text-muted);
+    transition: transform 0.3s ease;
+    margin-right: var(--space-xs);
+    flex-shrink: 0;
+  }
+
+  .grupo-empresa[open] .grupo-summary::before {
+    transform: rotate(90deg);
+  }
+
+  .grupo-nombre {
+    font-weight: 700;
+    font-size: var(--font-size-base);
+    color: var(--color-primary);
+  }
+
+  .grupo-vehiculo {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    margin-left: var(--space-xs);
+  }
+
+  .grupo-count {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    margin-left: var(--space-xs);
+  }
+
+  .grupo-summary .btn-whatsapp {
+    margin-left: auto;
+  }
+
+  /* ===== Smooth details animation ===== */
+  .grupo-content {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.35s ease;
+  }
+
+  .grupo-empresa[open] .grupo-content {
+    grid-template-rows: 1fr;
+  }
+
+  .grupo-inner {
+    overflow: hidden;
+  }
+
+  /* ===== Ruta Groups ===== */
+  .ruta-group {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .ruta-group:first-child {
+    border-top: none;
+  }
+
+  .ruta-heading {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-lg);
+    background: #fafbfc;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .ruta-icon {
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  .ruta-arrow {
+    color: var(--color-accent);
+    flex-shrink: 0;
+  }
+
+  .ruta-origen, .ruta-destino {
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .ruta-origen {
+    color: var(--color-primary);
+  }
+
+  .ruta-destino {
+    color: var(--color-accent);
+  }
+
+  /* ===== Day Dots ===== */
+  .day-dots {
+    display: inline-flex;
+    gap: 3px;
+    align-items: center;
+  }
+
+  .day-dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #b0b8c5;
+    background: transparent;
+    border: 1.5px solid #e0e4ea;
+    transition: all 0.15s ease;
+    line-height: 1;
+  }
+
+  .day-dot.active {
+    color: var(--color-primary);
+    background: #e8eef6;
+    border-color: var(--color-primary);
+  }
+
+  .feriados-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--color-accent);
+    background: #fff3e6;
+    border: 1.5px solid var(--color-accent);
+    margin-left: 4px;
+    line-height: 1;
+  }
+
+  /* ===== Desktop Table ===== */
+  .table-wrap {
+    background: var(--color-surface);
+    overflow: hidden;
     overflow-x: auto;
   }
 
-  .tabla {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    font-size: var(--font-size-sm);
+  .ruta-group .table-wrap {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
   }
 
-  .tabla thead {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-
-  .tabla th {
-    background: var(--color-primary);
-    color: white;
+  .tabla-ruta th {
+    background: transparent;
+    color: var(--color-text-muted);
     font-weight: 600;
     font-size: var(--font-size-xs);
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    padding: 16px 18px;
+    padding: 10px 16px;
     text-align: left;
     white-space: nowrap;
-    border-bottom: 2px solid #002244;
+    border-bottom: 1px solid #e5e7eb;
   }
 
-  .tabla td {
-    padding: 14px 18px;
-    border-bottom: 1px solid #e5e7eb;
+  .tabla-ruta td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f1f5f9;
     vertical-align: middle;
     color: var(--color-text);
     font-size: var(--font-size-sm);
   }
 
-  .tabla tbody tr:last-child td {
+  .tabla-ruta tbody tr:last-child td {
     border-bottom: none;
   }
 
+  .tabla-ruta .note-col {
+    width: 1%;
+    white-space: nowrap;
+  }
+
+  .obs-note {
+    font-size: var(--font-size-xs);
+    color: var(--color-accent);
+    font-style: italic;
+  }
+
   .transporte-row {
-    transition: background-color var(--transition);
-    animation: fadeInUp 0.35s ease both;
+    transition: background-color 0.15s ease;
+    animation: fadeInUp 0.3s ease both;
   }
 
   .transporte-row.hidden {
@@ -401,15 +617,18 @@ const sortedTransportes = [...transportes].sort((a, b) => {
   }
 
   .transporte-row:hover td {
-    background: #eef2ff;
-  }
-
-  .transporte-row:nth-child(even) td {
     background: #f8fafc;
   }
 
-  .transporte-row:nth-child(even):hover td {
-    background: #eef2ff;
+  .cell-time {
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    font-size: var(--font-size-base);
+    white-space: nowrap;
+  }
+
+  .cell-dias {
+    vertical-align: middle;
   }
 
   .badge {
@@ -429,29 +648,6 @@ const sortedTransportes = [...transportes].sort((a, b) => {
   .badge-comisionista {
     background: #fef3c7;
     color: #92400e;
-  }
-
-  .cell-name {
-    font-weight: 700;
-    color: var(--color-primary);
-    white-space: nowrap;
-  }
-
-  .cell-city {
-    font-weight: 500;
-  }
-
-  .cell-time {
-    font-variant-numeric: tabular-nums;
-    font-weight: 600;
-    font-size: var(--font-size-base);
-    white-space: nowrap;
-  }
-
-  .dias-list {
-    font-size: var(--font-size-xs);
-    color: var(--color-text-muted);
-    line-height: 1.4;
   }
 
   .btn-whatsapp {
@@ -513,7 +709,6 @@ const sortedTransportes = [...transportes].sort((a, b) => {
   }
 
   @media (max-width: 767px) {
-    /* Hero */
     .hero {
       padding: var(--space-2xl) 0 var(--space-lg);
       min-height: auto;
@@ -535,14 +730,15 @@ const sortedTransportes = [...transportes].sort((a, b) => {
     }
 
     /* Hide desktop table, show mobile cards */
-    .table-wrap {
+    .ruta-group .table-wrap {
       display: none;
     }
 
-    .cards-mobile {
+    .ruta-group .cards-mobile {
       display: flex;
       flex-direction: column;
-      gap: var(--space-md);
+      gap: 8px;
+      padding: var(--space-sm) var(--space-md) var(--space-md);
     }
 
     .card-mobile {
@@ -550,7 +746,6 @@ const sortedTransportes = [...transportes].sort((a, b) => {
       border: 1px solid var(--color-border);
       border-radius: var(--radius-lg);
       overflow: hidden;
-      box-shadow: var(--shadow-sm);
       animation: fadeInUp 0.3s ease both;
     }
 
@@ -558,74 +753,70 @@ const sortedTransportes = [...transportes].sort((a, b) => {
       display: none;
     }
 
-    .card-mobile-header {
+    .card-route-row {
+      background: #f8fafc;
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .card-route-row .route {
+      font-size: var(--font-size-sm);
+      font-weight: 700;
+      color: var(--color-primary);
+      text-align: center;
+      width: 100%;
+    }
+
+    .card-time-row {
       display: flex;
       align-items: center;
-      gap: var(--space-sm);
-      padding: var(--space-md) var(--space-lg);
-      border-bottom: 1px solid var(--color-border);
-      background: #f8fafc;
+      gap: 6px;
+      padding: 10px 14px 4px;
+      justify-content: center;
     }
 
-    .card-mobile-name {
-      font-weight: 700;
-      font-size: var(--font-size-base);
-      color: var(--color-primary);
-    }
-
-    .card-mobile-body {
-      padding: var(--space-sm) var(--space-lg);
-    }
-
-    .card-mobile-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      padding: 8px 0;
-      border-bottom: 1px solid #f1f5f9;
-      gap: var(--space-sm);
-    }
-
-    .card-mobile-row:last-child {
-      border-bottom: none;
-    }
-
-    .card-mobile-label {
-      font-size: var(--font-size-xs);
+    .card-time-label {
+      font-size: 10px;
       color: var(--color-text-muted);
       font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: 0.03em;
-      flex-shrink: 0;
+      letter-spacing: 0.04em;
     }
 
-    .card-mobile-value {
-      font-size: var(--font-size-sm);
+    .card-time-value {
+      font-size: var(--font-size-lg);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
       color: var(--color-text);
-      font-weight: 500;
-      text-align: right;
     }
 
-    .card-mobile-value.route {
-      color: var(--color-primary);
-      font-weight: 600;
+    .card-time-sep {
+      color: var(--color-text-muted);
+      margin: 0 4px;
+      font-size: var(--font-size-sm);
     }
 
-    .card-mobile-value.note {
+    .card-dias-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px 14px 10px;
+    }
+
+    .card-dias-row .day-dot {
+      width: 28px;
+      height: 28px;
+      font-size: 12px;
+    }
+
+    .card-obs {
+      padding: 6px 14px 10px;
+      font-size: var(--font-size-xs);
       color: var(--color-accent);
       font-style: italic;
-    }
-
-    .card-mobile-footer {
-      padding: var(--space-md) var(--space-lg);
-      border-top: 1px solid var(--color-border);
-      background: #f8fafc;
-    }
-
-    .card-mobile-footer .btn-whatsapp {
-      width: 100%;
-      justify-content: center;
-      padding: 10px 14px;
+      text-align: center;
+      border-top: 1px solid #f1f5f9;
     }
 
     .table-header {
@@ -633,23 +824,42 @@ const sortedTransportes = [...transportes].sort((a, b) => {
       align-items: flex-start;
       gap: var(--space-sm);
     }
+
+    /* Summary tweaks on mobile */
+    .grupo-summary {
+      flex-wrap: wrap;
+      padding: var(--space-sm) var(--space-md);
+    }
+
+    .grupo-summary .btn-whatsapp {
+      width: 100%;
+      justify-content: center;
+      margin-top: var(--space-xs);
+    }
+
+    .ruta-heading {
+      padding: var(--space-xs) var(--space-md);
+      font-size: var(--font-size-xs);
+    }
   }
 
   @media (max-width: 480px) {
-    .card-mobile-header {
-      padding: var(--space-sm) var(--space-md);
+    .card-time-row {
+      padding: 8px 10px 2px;
     }
 
-    .card-mobile-body {
-      padding: var(--space-xs) var(--space-md);
+    .card-time-value {
+      font-size: var(--font-size-base);
     }
 
-    .card-mobile-footer {
-      padding: var(--space-sm) var(--space-md);
+    .card-dias-row {
+      padding: 4px 10px 8px;
     }
 
-    .card-mobile-row {
-      padding: 6px 0;
+    .card-dias-row .day-dot {
+      width: 24px;
+      height: 24px;
+      font-size: 10px;
     }
   }
 </style>

@@ -58,7 +58,7 @@ const { origenes } = Astro.props;
 
   <div class="filtro-bar">
     <div class="filtro-count">
-      <span id="result-count">4</span> servicios encontrados
+      <span id="result-count">14</span> servicios encontrados
     </div>
     <button class="filtro-reset" id="filtro-reset" type="button">Limpiar filtros</button>
   </div>
@@ -101,9 +101,24 @@ const { origenes } = Astro.props;
         if (visible) visibles++;
       });
 
-      if (resultCount) resultCount.textContent = String(visibles);
+      // Group visibility: hide <details> when ALL children are hidden
+      document.querySelectorAll<HTMLElement>('.grupo-empresa').forEach((details) => {
+        const visibleChildren = details.querySelectorAll<HTMLElement>('.transporte-row:not(.hidden), .card-mobile:not(.hidden)');
+        if (visibleChildren.length === 0) {
+          details.style.display = 'none';
+        } else {
+          details.style.removeProperty('display');
+        }
+      });
+
+      // Count visible viajes (rows on desktop, cards on mobile — never both)
+      const isMobile = window.matchMedia('(max-width: 767px)').matches;
+      const visibleCount = isMobile
+        ? document.querySelectorAll<HTMLElement>('.card-mobile:not(.hidden)').length
+        : document.querySelectorAll<HTMLElement>('.transporte-row:not(.hidden)').length;
+      if (resultCount) resultCount.textContent = String(visibleCount);
       if (sinResultados) {
-        sinResultados.classList.toggle('hidden', visibles > 0);
+        sinResultados.classList.toggle('hidden', visibleCount > 0);
       }
     }
 
